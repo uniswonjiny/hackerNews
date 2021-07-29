@@ -1,23 +1,21 @@
 //news newest ask show jobs
-let base_url = 'https://api.hnpwa.com/v0/';
-let base_type = "news";
+let base_type = "newest";
+const base_url = 'https://api.hnpwa.com/v0/';
 let base_page_num = 1;
 
-// 상단 메뉴를 선택한 경우
 function menuEvent(type){
     base_type = type;
     base_page_num = 1;
     const elArr = document.querySelectorAll('.pagetop a');
-    //메뉴상단 선택 부분 변경
+
     elArr.forEach(el =>{
         el.className = "";
         if(el.innerHTML===type)el.className = "selected";
     });
-    // 데이터 가져오기
+
     dataFetch(base_type , base_page_num);
 }
 
-// 서버로 돌리지 않는 경우임 서버로 돌리는 환경에서 대폭 변경함
 function router(val){
     base_page_num +=1;
     dataFetch(base_type , base_page_num);
@@ -27,15 +25,14 @@ function dataFetch(){
     axios.get(`${base_url}${base_type}/${base_page_num}.json`)
         .then(res=>{
             if(res.data.length===0) {
-                base_page_num -=1; // 데이터가 없으로므 이전 페이지 정보로 변경한다. 페이징 값을 데이터가 있는 마지막 페이지로 유지하기 위해
+                base_page_num -=1;
                 alert('더이상 데이터 가 없습니다');
-                return; // 원래 alert 를 작동할 경우 멈추지만 나중에 다른 알림 창을 사용하면 강제 중지하는 구문이 필요하다
+                return;
             }
             trContentCreate(res.data);
         });
 }
 
-// url 을 생성하는 부분
 function trContentCreate(list){
     let template = '';
     list.map((item , index)=>{
@@ -61,6 +58,5 @@ function trContentCreate(list){
     let container = document.querySelector("tbody.container");
     container.innerHTML = template;
 }
-// 초기 로딩시 값을 가져온다.
+
 dataFetch(base_type , base_page_num);
-//trContentCreate();
